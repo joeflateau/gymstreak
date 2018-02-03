@@ -9,6 +9,7 @@
   "bin": {
     "gymstreak": "./index.js"
   },
+  "files": ["index.js"],
   "author": "",
   "license": "ISC",
   "dependencies": {

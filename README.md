@@ -1,5 +1,7 @@
 # GYMSTREAK
 
+![Example of streak](https://raw.githubusercontent.com/joeflateau/gymstreak/master/img/preview.png)
+
 ** This only works with your Planet Fitness checkins **
 
 ### Installation
