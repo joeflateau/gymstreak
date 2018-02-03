@@ -1,5 +1,7 @@
 # GYMSTREAK
 
+** This only works with your Planet Fitness checkins **
+
 ### Installation
 
 Run `npm i -g gymstreak`
