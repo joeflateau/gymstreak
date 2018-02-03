@@ -1,8 +1,12 @@
 # GYMSTREAK
 
-![Example of streak](https://raw.githubusercontent.com/joeflateau/gymstreak/master/img/preview.png)
+Gymstreak is a utility to print an indicator of your recent gym attendance in your bash prompt.
 
-** This only works with your Planet Fitness checkins **
+** This only works with your Planet Fitness checkins. I am not affiliated with Planet Fitness and they may block this at any time. **
+
+Visits are shown with yellow, days off are shown in purple.
+
+![Example of streak](https://raw.githubusercontent.com/joeflateau/gymstreak/master/img/preview.png)
 
 ### Installation
 
