@@ -1,6 +1,6 @@
 {
   "name": "gymstreak",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "repository": "github:joeflateau/gymstreak",
   "main": "index.js",
@@ -10,7 +10,9 @@
   "bin": {
     "gymstreak": "./index.js"
   },
-  "files": ["index.js"],
+  "files": [
+    "index.js"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
