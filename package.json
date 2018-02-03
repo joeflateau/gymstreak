@@ -2,6 +2,7 @@
   "name": "gymstreak",
   "version": "1.0.3",
   "description": "",
+  "repository": "github:joeflateau/gymstreak",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,9 +10,7 @@
   "bin": {
     "gymstreak": "./index.js"
   },
-  "files": [
-    "index.js"
-  ],
+  "files": ["index.js"],
   "author": "",
   "license": "ISC",
   "dependencies": {
