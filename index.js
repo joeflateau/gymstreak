@@ -9,9 +9,9 @@ const program = require("commander");
 
 program
   .command("fetch")
-  .option("-u, --username [username]", "Username")
-  .option("-p, --password [username]", "Password")
-  .option("-d, --days [days]", "Days", Number)
+  .option("-u, --username <username>", "Username")
+  .option("-p, --password <password>", "Password")
+  .option("-d, --days <days>", "Days", Number)
   .action(options => {
     const { username, password, days } = options;
 
