@@ -9,9 +9,9 @@ const program = require("commander");
 
 program
   .command("fetch")
-  .option("-u, --username [username]", "Username")
-  .option("-p, --password [username]", "Password")
-  .option("-d, --days [days]", "Days", Number)
+  .option("-u, --username <username>", "Username")
+  .option("-p, --password <password>", "Password")
+  .option("-d, --days <days>", "Days", Number)
   .action(options => {
     const { username, password, days } = options;
 
@@ -79,34 +79,64 @@ program
       });
   });
 
-program.command("format").action(() => {
-  chalk.enabled = 1;
-  chalk.level = 3;
+program
+  .command("format")
+  .option(
+    "-w, --went <spec>",
+    "Display days at the gym according to spec: char[:color]"
+  )
+  .option(
+    "-a, --away <spec>",
+    "Display days away from the gym according to spec: char[:color]"
+  )
+  .action(options => {
+    chalk.enabled = 1;
+    chalk.level = 3;
 
-  const streak$p = new Promise(resolve => {
-    var streak = "";
-    process.stdin.resume();
-    process.stdin.on("data", function(buf) {
-      streak += buf.toString();
+    // Character and its background color
+    const defaultWent = { char: "\u25ac", color: 220 };
+    const defaultAway = { char: "\u25ac", color: 105 };
+
+    const wentChar = fromOption(options.went, defaultWent);
+    const awayChar = fromOption(options.away, defaultAway);
+
+    const streak$p = new Promise(resolve => {
+      var streak = "";
+      process.stdin.resume();
+      process.stdin.on("data", function(buf) {
+        streak += buf.toString();
+      });
+      process.stdin.on("end", function() {
+        resolve(
+          streak
+            .trim()
+            .split("")
+            .map(v => Boolean(Number(v)))
+        );
+      });
     });
-    process.stdin.on("end", function() {
-      resolve(
-        streak
-          .trim()
-          .split("")
-          .map(v => Boolean(Number(v)))
-      );
-    });
+
+    streak$p
+      .then(streak => {
+        console.error(streak);
+        console.log(
+          streak
+            .map(went => {
+              const { char, color } = went ? wentChar : awayChar;
+              return chalk.ansi256(color)(char);
+            })
+            .join("")
+        );
+      });
   });
 
-  streak$p.then(streak => {
-    console.error(streak);
-    console.log(
-      streak
-        .map(went => chalk.ansi256(!went ? "105" : "220")("\u25ac"))
-        .join("")
-    );
-  });
-});
+function fromOption(spec, defaults) {
+  if (spec == null) return defaults;
+  const [char, color] = spec.split(":");
+  return {
+    char: char || defaults.char,
+    color: color || defaults.color
+  };
+}
 
 program.parse(process.argv);
