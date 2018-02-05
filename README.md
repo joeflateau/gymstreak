@@ -23,7 +23,7 @@ There are two steps to set this up once installed.
 Run `crontab -e` and add the following line. This will query the gym every hour for checkins.
 
 ```
-0 * * * * gymstreak fetch --username "xxxx" --password 'xxxx' --days "14" > ~/.gymstreak 2> /dev/null
+0 * * * * gymstreak fetch --username "xxxx" --password 'xxxx' --days "14"
 ```
 
 #### 2. Configure your prompt in `.bash_profile` (or `.bashrc`):
@@ -32,7 +32,7 @@ This will output your current streak in your prompt. If you've never done this b
 
 ```bash
 function gym_streak(){
-    cat ~/.gymstreak | gymstreak format 2>/dev/null
+    gymstreak format 2>/dev/null
 }
 
 PS1+='$(gym_streak) '
@@ -40,7 +40,7 @@ PS1+='$(gym_streak) '
 
 ### Output Format
 
-Use the `format` command's  `--went <spec>` and `--away <spec>` options to control how the days you attend and/or don't attend the gym are formatted.
+Use the `format` command's `--went <spec>` and `--away <spec>` options to control how the days you attend and/or don't attend the gym are formatted.
 The format of `spec` is: `character[:color]`, where `character` is the character to display and `color` is an optional ANSI 256 color code.
 
 For example:
@@ -56,3 +56,7 @@ Certain characters may appear squished together. In this case you can add a spac
 ```
 gymstreak format --went '💪 ' --away '💤 '
 ```
+
+### Recent Changes
+
+Starting with v1.1, gymstreak reads and writes a file instead of relying on the file being piped through stdin/stdout. The default file is `~/.gymstreak` but can be overridden by the `--file` option.

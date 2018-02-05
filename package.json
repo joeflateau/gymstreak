@@ -18,9 +18,11 @@
   "dependencies": {
     "chalk": "^2.3.0",
     "commander": "^2.13.0",
+    "fs-extra": "^5.0.0",
     "moment": "^2.20.1",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
-    "supports-color": "^5.1.0"
+    "supports-color": "^5.1.0",
+    "untildify": "^3.0.2"
   }
 }

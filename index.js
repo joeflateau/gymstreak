@@ -6,14 +6,21 @@ const client = rp.defaults({ jar, followAllRedirects: true });
 const moment = require("moment");
 const chalk = require("chalk");
 const program = require("commander");
+const { writeFile, readFile } = require("fs-extra");
+const untildify = require("untildify");
+const assert = require("assert");
 
 program
   .command("fetch")
   .option("-u, --username <username>", "Username")
   .option("-p, --password <password>", "Password")
   .option("-d, --days <days>", "Days", Number)
+  .option("-f, --file <file>", "Streak File", "~/.gymstreak")
   .action(options => {
-    const { username, password, days } = options;
+    const { username, password, days, file } = options;
+
+    assert.notEqual(username, null);
+    assert.notEqual(password, null);
 
     const planetFitnessClubNumber = 7000;
     const lowDate = moment().add(-days, "days");
@@ -69,9 +76,9 @@ program
           .reverse();
       })
       .then(streak => {
-        console.error(streak);
-        console.log(streak.map(went => (went ? 1 : 0)).join(""));
-        process.exit(0);
+        const streakString = streak.map(went => (went ? 1 : 0)).join("");
+        const filePath = untildify(file);
+        return writeFile(filePath, streakString);
       })
       .catch(err => {
         console.error(err);
@@ -89,6 +96,7 @@ program
     "-a, --away <spec>",
     "Display days away from the gym according to spec: char[:color]"
   )
+  .option("-f, --file <file>", "Streak File", "~/.gymstreak")
   .action(options => {
     chalk.enabled = 1;
     chalk.level = 3;
@@ -100,34 +108,24 @@ program
     const wentChar = fromOption(options.went, defaultWent);
     const awayChar = fromOption(options.away, defaultAway);
 
-    const streak$p = new Promise(resolve => {
-      var streak = "";
-      process.stdin.resume();
-      process.stdin.on("data", function(buf) {
-        streak += buf.toString();
-      });
-      process.stdin.on("end", function() {
-        resolve(
-          streak
-            .trim()
-            .split("")
-            .map(v => Boolean(Number(v)))
-        );
-      });
+    const streak$p = readFile(untildify(options.file)).then(fileContents => {
+      return fileContents
+        .toString("utf8")
+        .trim()
+        .split("")
+        .map(v => Boolean(Number(v)));
     });
 
-    streak$p
-      .then(streak => {
-        console.error(streak);
-        console.log(
-          streak
-            .map(went => {
-              const { char, color } = went ? wentChar : awayChar;
-              return chalk.ansi256(color)(char);
-            })
-            .join("")
-        );
-      });
+    streak$p.then(streak => {
+      console.log(
+        streak
+          .map(went => {
+            const { char, color } = went ? wentChar : awayChar;
+            return chalk.ansi256(color)(char);
+          })
+          .join("")
+      );
+    });
   });
 
 function fromOption(spec, defaults) {
