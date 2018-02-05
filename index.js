@@ -9,9 +9,9 @@ const program = require("commander");
 
 program
   .command("fetch")
-  .option("-u, --username [username]", "Username")
-  .option("-p, --password [username]", "Password")
-  .option("-d, --days [days]", "Days", Number)
+  .option("-u, --username <username>", "Username")
+  .option("-p, --password <password>", "Password")
+  .option("-d, --days <days>", "Days", Number)
   .action(options => {
     const { username, password, days } = options;
 
@@ -79,9 +79,32 @@ program
       });
   });
 
-program.command("format").action(() => {
+program
+  .command("format")
+  .option("-w, --went <spec>", "Display days at the gym according to spec: char[:color]")
+  .option("-a, --away <spec>", "Display days away from the gym according to spec: char[:color]")
+  .action(options => {
+
   chalk.enabled = 1;
   chalk.level = 3;
+
+  // Character and its background color
+  const defaultWent   = ["\u25ac", 220];
+  const defaultAway = ["\u25ac", 110];
+
+  let wentChar = defaultWent;
+  if(options.went) {
+    wentChar = options.went.split(":", 2);
+    if(wentChar.length < 2)
+      wentChar[1] = defaultWent[1];
+  }
+
+  let awayChar = defaultAway;
+  if(options.away) {
+    awayChar = options.away.split(":", 2);
+    if(awayChar.length < 2)
+      awayChar[1] = defaultAway[1];
+  }
 
   const streak$p = new Promise(resolve => {
     var streak = "";
@@ -103,7 +126,10 @@ program.command("format").action(() => {
     console.error(streak);
     console.log(
       streak
-        .map(went => chalk.ansi256(!went ? "105" : "220")("\u25ac"))
+        .map(went => {
+          let [ char, color ] = went ? wentChar : awayChar;
+          return chalk.ansi256(color)(char);
+        })
         .join("")
     );
   });
